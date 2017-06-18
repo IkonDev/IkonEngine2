@@ -30,3 +30,7 @@
 *.exe
 *.out
 *.app
+Junk/
+Build_x64/
+IkonEngine2/Debug/
+.vs/
