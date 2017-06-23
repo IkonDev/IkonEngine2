@@ -143,12 +143,20 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BaseApplication.cpp" />
+    <ClCompile Include="ConvexHull.cpp" />
+    <ClCompile Include="IkonMath.cpp" />
     <ClCompile Include="Landscape.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="MarchingSquares.cpp" />
+    <ClCompile Include="SquareTypes.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseApplication.h" />
+    <ClInclude Include="ConvexHull.h" />
+    <ClInclude Include="IkonMath.h" />
     <ClInclude Include="Landscape.h" />
+    <ClInclude Include="MarchingSquares.h" />
+    <ClInclude Include="SquareTypes.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

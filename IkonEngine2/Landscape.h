@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include "MarchingSquares.h"
 #include <string>
 
 class MapArray
@@ -47,6 +48,7 @@ public:
 	Landscape();
 	Landscape(unsigned int X, unsigned int Y);
 	~Landscape();
+	void Startup();
 	void Draw(sf::RenderWindow& Window);
 
 private:
@@ -54,6 +56,7 @@ private:
 	unsigned int LandscapeHeight;
 
 	MapArray Map;
+	MarchingSquares MS;
 
 	sf::Texture A;
 	sf::Texture B;

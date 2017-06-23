@@ -32,15 +32,15 @@ void MapArray::Create(std::string Name, const unsigned int X, const unsigned int
 	unsigned int** Map = new unsigned int*[X];
 
 	//Allocate
-	for (int i = 0; i < X; ++i)
+	for (int i = 0; i < (int)X; ++i)
 	{
 		Map[i] = new unsigned int[Y];
 	}
 
 	//Initialize
-	for (int y = 0; y < Y; ++y)
+	for (int y = 0; y < (int)Y; ++y)
 	{
-		for (int x = 0; x < X; ++x)
+		for (int x = 0; x < (int)X; ++x)
 		{
 			Map[x][y] = FillType;
 		}
@@ -52,9 +52,9 @@ void MapArray::Create(std::string Name, const unsigned int X, const unsigned int
 
 void MapArray::PrintMap()
 {
-	for (int y = 0; y < m_Height; ++y)
+	for (int y = 0; y < (int)m_Height; ++y)
 	{
-		for (int x = 0; x < m_Width; ++x)
+		for (int x = 0; x < (int)m_Width; ++x)
 		{
 			if (m_Map[x][y] == 0)
 			{
@@ -111,7 +111,7 @@ MapArray CellularAutomata::CellularAutomataProcess(MapArray InitialMap, Ruleset 
 {
 	int Width = InitialMap.GetWidth();
 	int Height = InitialMap.GetHeight();
-	for (int i = 0; i < Iterations; ++i)
+	for (int i = 0; i < (int)Iterations; ++i)
 	{
 		for (int y = 0; y < Height; ++y)
 		{
@@ -194,11 +194,11 @@ int CellularAutomata::GetWalls(MapArray InitialMap, int x, int y, int Scope)
 				{
 					Walls++;
 				}
-				else if (X > InitialMap.GetWidth() - 1 || Y > InitialMap.GetHeight() - 1)
+				else if (X > (int)InitialMap.GetWidth() - 1 || Y > (int)InitialMap.GetHeight() - 1)
 				{
 					Walls++;
 				}
-				else if (InitialMap(X, Y) == true)
+				else if (InitialMap(X, Y) == 1)
 				{
 					Walls++;
 				}
@@ -212,62 +212,62 @@ Landscape::Landscape()
 {
 	LandscapeWidth = 40;
 	LandscapeHeight = 30;
-
-	Map = MapArray();
-	Map.Create("TestMap", LandscapeWidth, LandscapeHeight);
-	Map = CellularAutomata::RandomFill(Map, 3);
-	Map = CellularAutomata::CellularAutomataProcess(Map, CellularAutomata::Ruleset::Rule_B678_S345678, 2);
-
-	A.loadFromFile("Data/TileA.png");
-	B.loadFromFile("Data/TileB.png");
-	C.loadFromFile("Data/TileC.png");
+	Startup();
 }
 
 Landscape::Landscape(unsigned int X, unsigned int Y)
 {
 	LandscapeWidth = X;
 	LandscapeHeight = Y;
- 
-	Map = MapArray();
-	Map.Create("TestMap", LandscapeWidth, LandscapeHeight);
-	Map = CellularAutomata::RandomFill(Map, 0);
-	Map = CellularAutomata::CellularAutomataProcess(Map, CellularAutomata::Ruleset::Rule_B678_S345678, 6);
-
-	A.loadFromFile("Data/TileA.png");
-	B.loadFromFile("Data/TileB.png");
-	C.loadFromFile("Data/TileC.png");
+	Startup();
 }
 
 Landscape::~Landscape()
 {
 }
 
+void Landscape::Startup()
+{
+	Map = MapArray();
+	Map.Create("TestMap", LandscapeWidth, LandscapeHeight);
+	Map = CellularAutomata::RandomFill(Map, 3);
+	Map = CellularAutomata::CellularAutomataProcess(Map, CellularAutomata::Ruleset::Rule_B678_S345678, 2);
+	MS = MarchingSquares();
+	MS.Create("Squares", Map);
+	MS.MarchSquares(Map, 600, 20);
+
+	//A.loadFromFile("Data/TileA.png");
+	//B.loadFromFile("Data/TileB.png");
+	//C.loadFromFile("Data/TileC.png");
+}
+
 void Landscape::Draw(sf::RenderWindow& Window)
 {
-	for (int y = 0; y < LandscapeHeight; ++y)
-	{
-		for (int x = 0; x < LandscapeWidth; ++x)
-		{
-			sf::RectangleShape Tile = sf::RectangleShape(sf::Vector2f(20, 20));
-
-			switch (Map(x,y))
-			{
-			case 0:
-				Tile.setTexture(&A);
-				break;
-			case 1:
-				Tile.setTexture(&C);
-				break;
-			case 2:
-				Tile.setTexture(&B);
-				break;
-			default:
-				Tile.setFillColor(sf::Color::Red);
-				break;
-			}
-			sf::Vector2f Pos = sf::Vector2f(x * 20, y * 20);
-			Tile.setPosition(Pos);
-			Window.draw(Tile);
-		}
-	}
+	//for (int y = 0; y < LandscapeHeight; ++y)
+	//{
+	//	for (int x = 0; x < LandscapeWidth; ++x)
+	//	{
+	//		sf::RectangleShape Tile = sf::RectangleShape(sf::Vector2f(20, 20));
+	//
+	//		switch (Map(x,y))
+	//		{
+	//		case 0:
+	//			Tile.setTexture(&A);
+	//			break;
+	//		case 1:
+	//			Tile.setTexture(&B);
+	//			break;
+	//		case 2:
+	//			Tile.setTexture(&C);
+	//			break;
+	//		default:
+	//			Tile.setFillColor(sf::Color::Red);
+	//			break;
+	//		}
+	//		sf::Vector2f Pos = sf::Vector2f(x * 20, y * 20);
+	//		Tile.setPosition(Pos);
+	//		Window.draw(Tile);
+	//	}
+	//}
+	MS.DrawMap(Window);
 }

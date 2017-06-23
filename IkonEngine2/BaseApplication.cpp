@@ -32,13 +32,7 @@ BaseApplication::~BaseApplication()
 
 void BaseApplication::Startup()
 {
-	Circ = sf::CircleShape(64);
-	Circ.setFillColor(sf::Color::Magenta);
-	Circ.setPosition(0, 300 - 64);
-
 	L = Landscape();
-
-	upd = true;
 }
 
 void BaseApplication::Run()
@@ -64,14 +58,8 @@ void BaseApplication::Update()
 
 void BaseApplication::Draw()
 {
-	
-
-	if (upd)
-	{
-		MainWindow->clear(sf::Color::White);
-		L.Draw(*MainWindow);
-		upd = false;
-	}
+	MainWindow->clear(sf::Color::White);
+	L.Draw(*MainWindow);
 
 	MainWindow->display();
 }
