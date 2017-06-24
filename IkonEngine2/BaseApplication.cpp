@@ -32,7 +32,7 @@ BaseApplication::~BaseApplication()
 
 void BaseApplication::Startup()
 {
-	L = Landscape();
+	L = Landscape(30,10);
 }
 
 void BaseApplication::Run()
@@ -45,6 +45,10 @@ void BaseApplication::Run()
 		{
 			if (event.type == sf::Event::Closed)
 				MainWindow->close();
+			if (event.type == sf::Event::MouseMoved)
+			{
+				
+			}
 		}
 		Update();
 		Draw();

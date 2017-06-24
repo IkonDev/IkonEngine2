@@ -88,8 +88,8 @@ void MarchingSquares::MarchSquares(MapArray Map, int ScreenHeight, int TileSize)
 			ConvexHull T = ConvexHull();
 
 			T = SquareTypes::GetSquare(m_PieceMap[x][y],
-				sf::Vector2f(x * TileSize + (TileSize / 2), 
-							 y * TileSize + (TileSize / 2)), //POS
+				sf::Vector2f(x * TileSize + (TileSize / 1), 
+							 y * TileSize + (TileSize / 1)), //POS
 				sf::Vector2f(TileSize, TileSize));														   //SIZE
 
 			m_Hulls.push_back(T);
@@ -117,8 +117,9 @@ void MarchingSquares::PrintMap()
 void MarchingSquares::DrawMap(sf::RenderWindow& Window)
 {
 	//NOTE: Need to change this so that all the hulls are created and stored. So shadows can be drawn before objects
-	int mX = /*MouseX*/32;
-	int mY = 32/* MouseY*/;
+	sf::Vector2i Mouse = sf::Mouse::getPosition(Window);
+	int mX = Mouse.x;
+	int mY = Mouse.y;
 
 	//Render Hull Shadows First
 	for each(ConvexHull C in m_Hulls)

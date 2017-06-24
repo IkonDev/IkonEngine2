@@ -230,44 +230,44 @@ void Landscape::Startup()
 {
 	Map = MapArray();
 	Map.Create("TestMap", LandscapeWidth, LandscapeHeight);
-	Map = CellularAutomata::RandomFill(Map, 3);
+	Map = CellularAutomata::RandomFill(Map, rand());
 	Map = CellularAutomata::CellularAutomataProcess(Map, CellularAutomata::Ruleset::Rule_B678_S345678, 2);
 	MS = MarchingSquares();
 	MS.Create("Squares", Map);
 	MS.MarchSquares(Map, 600, 20);
 
-	//A.loadFromFile("Data/TileA.png");
-	//B.loadFromFile("Data/TileB.png");
-	//C.loadFromFile("Data/TileC.png");
+	A.loadFromFile("Data/TileA.png");
+	B.loadFromFile("Data/TileB.png");
+	C.loadFromFile("Data/TileC.png");
 }
 
 void Landscape::Draw(sf::RenderWindow& Window)
 {
-	//for (int y = 0; y < LandscapeHeight; ++y)
-	//{
-	//	for (int x = 0; x < LandscapeWidth; ++x)
-	//	{
-	//		sf::RectangleShape Tile = sf::RectangleShape(sf::Vector2f(20, 20));
-	//
-	//		switch (Map(x,y))
-	//		{
-	//		case 0:
-	//			Tile.setTexture(&A);
-	//			break;
-	//		case 1:
-	//			Tile.setTexture(&B);
-	//			break;
-	//		case 2:
-	//			Tile.setTexture(&C);
-	//			break;
-	//		default:
-	//			Tile.setFillColor(sf::Color::Red);
-	//			break;
-	//		}
-	//		sf::Vector2f Pos = sf::Vector2f(x * 20, y * 20);
-	//		Tile.setPosition(Pos);
-	//		Window.draw(Tile);
-	//	}
-	//}
+	for (int y = 0; y < LandscapeHeight; ++y)
+	{
+		for (int x = 0; x < LandscapeWidth; ++x)
+		{
+			sf::RectangleShape Tile = sf::RectangleShape(sf::Vector2f(20, 20));
+	
+			switch (Map(x,y))
+			{
+			case 0:
+				Tile.setTexture(&A);
+				break;
+			case 1:
+				Tile.setTexture(&B);
+				break;
+			case 2:
+				Tile.setTexture(&C);
+				break;
+			default:
+				Tile.setFillColor(sf::Color::Red);
+				break;
+			}
+			sf::Vector2f Pos = sf::Vector2f(x * 20, y * 20);
+			Tile.setPosition(Pos);
+			Window.draw(Tile);
+		}
+	}
 	MS.DrawMap(Window);
 }

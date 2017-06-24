@@ -18,7 +18,7 @@ public:
 private:
 	sf::ContextSettings WindowSettings;
 	sf::RenderWindow* MainWindow = nullptr;
-	unsigned int AntiAliasingLevel = 8;
+	unsigned int AntiAliasingLevel = 0;
 	unsigned int WindowHeight;
 	unsigned int WindowWidth;
 	const char*  WindowTitle;
@@ -27,5 +27,7 @@ private:
 	sf::CircleShape Circ;
 	bool upd = false;
 	Landscape L;
+
+	sf::Vector2f MouseCoords;
 };
 

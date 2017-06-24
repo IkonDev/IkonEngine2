@@ -113,45 +113,56 @@ void ConvexHull::CreateHull()
 
 ConvexHull ConvexHull::CreateShadowHull(const ConvexHull& Hull, const sf::Vector2f& LightPos)
 {
+	
 	//Create a light length
-	float LightLength = 2000.0f;
+	float LightLength = 2500.0f;
 
 	//Get the objects verticies
 	std::vector<sf::Vector2f> ObjPoints = Hull.GetPoints();
 	unsigned int PointAmount = ObjPoints.size();
-
-	//Create a list to store the shadows points
-	std::vector<sf::Vector2f> ShadowPoints;
-
-	for (int i = 0; i < PointAmount; ++i)
+	sf::Vector2f Total = sf::Vector2f(0, 0);
+	for (int t = 0; t < PointAmount; ++t)
 	{
-		//Get a vector from the point to the light
-		sf::Vector2f LightToPoint = LightPos - ObjPoints[i];
-		float Distance = IkonMath::Length(LightToPoint);
-		if (Distance < 1250.0f)
-		{
-			//Normalize it, to get a unit vector toward the light
-			sf::Vector2f Direction = IkonMath::Normalize(LightToPoint);
-			//Reverse it, so it points away from the light
-			Direction *= -1.0f;
-			sf::Vector2f ShadowPoint = ObjPoints[i] + (Direction * LightLength);
+		Total += ObjPoints[t];
+	}
+	Total /= (float)PointAmount;
 
-			ShadowPoints.push_back(ShadowPoint);
+	if (IkonMath::Length(Total) < LightLength)
+	{
+	}
+		//Create a list to store the shadows points
+		std::vector<sf::Vector2f> ShadowPoints;
+
+		for (int i = 0; i < PointAmount; ++i)
+		{
+			//Get a vector from the point to the light
+			sf::Vector2f LightToPoint = LightPos - ObjPoints[i];
+			float Distance = IkonMath::Length(LightToPoint);
+			if (Distance < LightLength / 2)
+			{
+				//Normalize it, to get a unit vector toward the light
+				sf::Vector2f Direction = IkonMath::Normalize(LightToPoint);
+				//Reverse it, so it points away from the light
+				Direction *= -1.0f;
+				sf::Vector2f ShadowPoint = ObjPoints[i] + (Direction * LightLength);
+
+				ShadowPoints.push_back(ShadowPoint);
+			}
+
+		}
+		if (ShadowPoints.size() > 0)
+		{
+			//Make a new hull and give it all the points of the current hull
+			ConvexHull m_ShadowHull = ConvexHull(Hull);
+			m_ShadowHull.AddPoints(ShadowPoints);
+			m_ShadowHull.CreateHull();
+			return m_ShadowHull;
+		}
+		else
+		{
+			return ConvexHull();
 		}
 
-	}
-	if (ShadowPoints.size() > 0)
-	{
-		//Make a new hull and give it all the points of the current hull
-		ConvexHull m_ShadowHull = ConvexHull(Hull);
-		m_ShadowHull.AddPoints(ShadowPoints);
-		m_ShadowHull.CreateHull();
-		return m_ShadowHull;
-	}
-	else
-	{
-		return ConvexHull();
-	}
 
 }
 
