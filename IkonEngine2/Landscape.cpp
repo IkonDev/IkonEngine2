@@ -170,7 +170,7 @@ MapArray CellularAutomata::CellularAutomataProcess(MapArray InitialMap, Ruleset 
 
 unsigned int CellularAutomata::Random()
 {
-	return rand() % 100 < 45 ? 1 : 0;
+	return rand() % 100 < 90 ? 1 : 0;
 }
 
 int CellularAutomata::GetWalls(MapArray InitialMap, int x, int y, int Scope)

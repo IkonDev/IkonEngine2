@@ -129,7 +129,7 @@ void MarchingSquares::DrawMap(sf::RenderWindow& Window)
 	}
 	for each(ConvexHull C in m_Hulls)
 	{
-		C.DrawHull(sf::Vector3f(0.1f, 0.1f, 0.1f), 1.0f, Window);
+		C.DrawHull(sf::Vector3f(0.1f, 0.1f, 0.1f), 1.0f, Window/*, Tex, Window.getSize().y / 30*/);
 	}
 }
 

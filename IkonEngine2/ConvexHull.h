@@ -13,6 +13,7 @@ public:
 	void CreateHull(); //Giftwrap the mesh and create a convex hull
 	static ConvexHull CreateShadowHull(const ConvexHull& Hull, const sf::Vector2f& LightPos);
 	void DrawHull(const sf::Vector3f& colour, float Depth, sf::RenderWindow& Window); //Draw the hull using aie::gizmos.
+	void DrawHull(const sf::Vector3f& colour, float Depth, sf::RenderWindow& Window, sf::Image& Texture, int TileSize); //Draw the hull using aie::gizmos.
 
 	const std::vector<sf::Vector2f>& GetPoints() const { return m_pointList; }
 

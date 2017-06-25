@@ -179,6 +179,35 @@ void ConvexHull::DrawHull(const sf::Vector3f& colour, float Depth, sf::RenderWin
 	Window.draw(Shape);
 }
 
+void ConvexHull::DrawHull(const sf::Vector3f & colour, float Depth, sf::RenderWindow & Window, sf::Image& Texture, int TileSize)
+{
+	sf::ConvexShape Shape = sf::ConvexShape(this->GetPoints().size());
+	sf::Vector2i TexCoord = sf::Vector2i(999999, 999999);
+	for (int i = 0; i < GetPoints().size(); ++i)
+	{
+		sf::Vector2f Point = GetPoints()[i];
+		if (Point.x < TexCoord.x)
+		{
+			TexCoord.x = Point.x;
+		}
+		if (Point.y < TexCoord.y)
+		{
+			TexCoord.y = Point.y;
+		}
+		Shape.setPoint(i, Point);
+	}
+
+	sf::Texture T;
+	T.loadFromImage(Texture, sf::IntRect(TexCoord.x % Texture.getSize().x, TexCoord.y % Texture.getSize().y, TileSize, TileSize));
+	Shape.setTexture(&T);
+
+	TexCoord = sf::Vector2i(999999, 999999);
+
+	//Shape.setFillColor(sf::Color(colour.x, colour.y, colour.z));
+
+	Window.draw(Shape);
+}
+
 // To find orientation of an ordered triplet (p, q, r).
 // The function returns following values
 // 0 --> p, q and r are colinear
