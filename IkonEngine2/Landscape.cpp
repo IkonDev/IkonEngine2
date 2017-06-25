@@ -230,44 +230,75 @@ void Landscape::Startup()
 {
 	Map = MapArray();
 	Map.Create("TestMap", LandscapeWidth, LandscapeHeight);
-	Map = CellularAutomata::RandomFill(Map, rand());
+	Map = CellularAutomata::RandomFill(Map, time(NULL));
 	Map = CellularAutomata::CellularAutomataProcess(Map, CellularAutomata::Ruleset::Rule_B678_S345678, 2);
 	MS = MarchingSquares();
 	MS.Create("Squares", Map);
 	MS.MarchSquares(Map, 600, 20);
 
-	A.loadFromFile("Data/TileA.png");
+	A.loadFromFile("Data/Grass.bmp");
 	B.loadFromFile("Data/TileB.png");
 	C.loadFromFile("Data/TileC.png");
 }
 
 void Landscape::Draw(sf::RenderWindow& Window)
 {
+	sf::RectangleShape Tile = sf::RectangleShape(sf::Vector2f(20, 20));
+	Tile.setTexture(&A);
+
 	for (int y = 0; y < LandscapeHeight; ++y)
 	{
 		for (int x = 0; x < LandscapeWidth; ++x)
 		{
-			sf::RectangleShape Tile = sf::RectangleShape(sf::Vector2f(20, 20));
-	
-			switch (Map(x,y))
-			{
-			case 0:
-				Tile.setTexture(&A);
-				break;
-			case 1:
-				Tile.setTexture(&B);
-				break;
-			case 2:
-				Tile.setTexture(&C);
-				break;
-			default:
-				Tile.setFillColor(sf::Color::Red);
-				break;
-			}
+			Tile.setTextureRect(sf::IntRect(x * 20 % 100, y * 20 % 100, 20, 20));
+
+			//switch (Map(x, y))
+			//{
+			//case 0:
+			//	Tile.setOutlineColor(sf::Color::Red);
+			//	Tile.setOutlineThickness(2.0f);
+			//	break;
+			//case 1:
+			//	Tile.setOutlineColor(sf::Color::Blue);
+			//	Tile.setOutlineThickness(2.0f);
+			//	break;
+			//}
+			
 			sf::Vector2f Pos = sf::Vector2f(x * 20, y * 20);
 			Tile.setPosition(Pos);
 			Window.draw(Tile);
 		}
 	}
 	MS.DrawMap(Window);
+}
+
+void Landscape::Update(sf::RenderWindow& Window)
+{
+	Frame++;
+	std::cout << Frame << std::endl;
+	sf::Vector2i Mouse = sf::Mouse::getPosition(Window);
+	Mouse /= 20;
+	
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+	{
+		if (Mouse.x < Map.GetWidth() && Mouse.y < Map.GetHeight())
+		{	
+			Map(Mouse.x, Mouse.y) = 1;
+
+			MS = MarchingSquares();
+			MS.Create("Squares", Map);
+			MS.MarchSquares(Map, 600, 20);
+		}
+	}
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Right))
+	{
+		if (Mouse.x < Map.GetWidth() && Mouse.y < Map.GetHeight())
+		{
+			Map(Mouse.x, Mouse.y) = 0;
+
+			MS = MarchingSquares();
+			MS.Create("Squares", Map);
+			MS.MarchSquares(Map, 600, 20);
+		}
+	}
 }

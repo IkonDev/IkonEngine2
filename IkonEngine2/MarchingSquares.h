@@ -32,4 +32,6 @@ private:
 	unsigned int m_Width;
 	unsigned int m_Height;
 	std::vector<ConvexHull> m_Hulls;
+
+	sf::Image Tex;
 };

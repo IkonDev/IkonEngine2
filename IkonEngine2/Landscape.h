@@ -50,6 +50,7 @@ public:
 	~Landscape();
 	void Startup();
 	void Draw(sf::RenderWindow& Window);
+	void Update(sf::RenderWindow& Window);
 
 private:
 	unsigned int LandscapeWidth;
@@ -61,5 +62,7 @@ private:
 	sf::Texture A;
 	sf::Texture B;
 	sf::Texture C;
+
+	unsigned int Frame = 0;
 };
 

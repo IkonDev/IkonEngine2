@@ -7,8 +7,8 @@
 
 MarchingSquares::MarchingSquares()
 {
+	Tex.loadFromFile("Data/Brick_tex2.bmp");
 }
-
 
 MarchingSquares::~MarchingSquares()
 {

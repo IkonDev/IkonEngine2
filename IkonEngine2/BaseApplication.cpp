@@ -5,7 +5,7 @@ BaseApplication::BaseApplication()
 	WindowWidth = 800;
 	WindowHeight = 600;
 	WindowTitle = "Application - B++ Entertainment";
-	AntiAliasingLevel = 8;
+	AntiAliasingLevel = 4; //8 provides diminising returns
 	WindowSettings.antialiasingLevel = AntiAliasingLevel;
 	MainWindow = new sf::RenderWindow(sf::VideoMode(WindowWidth, WindowHeight), WindowTitle, sf::Style::Default, WindowSettings);
 
@@ -32,7 +32,7 @@ BaseApplication::~BaseApplication()
 
 void BaseApplication::Startup()
 {
-	L = Landscape(30,10);
+	L = Landscape();
 }
 
 void BaseApplication::Run()
@@ -57,7 +57,7 @@ void BaseApplication::Run()
 
 void BaseApplication::Update()
 {
-
+	L.Update(*MainWindow);
 }
 
 void BaseApplication::Draw()
