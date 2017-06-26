@@ -1,7 +1,7 @@
 #include "ConvexHull.h"
 #include "IkonMath.h"
 #include <iostream>
-
+#include <omp.h>
 ConvexHull::ConvexHull()
 {
 }
@@ -19,6 +19,11 @@ void ConvexHull::SetPoints(const std::vector<sf::Vector2f>& a_points)
 void ConvexHull::AddPoints(const std::vector<sf::Vector2f>& a_points)
 {
 	m_pointList.insert(std::end(m_pointList), std::begin(a_points), std::end(a_points));
+}
+
+void ConvexHull::AddPoint(sf::Vector2f & a_point)
+{
+	m_pointList.push_back(a_point);
 }
 
 void ConvexHull::CreateHull()
@@ -61,7 +66,6 @@ void ConvexHull::CreateHull()
 		// wise point in q. If any point 'i' is more counterclock-
 		// wise than q, then update q.
 		Q = (P + 1) % N;
-
 		for (int i = 0; i < N; i++)
 		{
 			// If i is more counterclockwise than current q, then
@@ -119,42 +123,50 @@ ConvexHull ConvexHull::CreateShadowHull(const ConvexHull& Hull, const sf::Vector
 
 	//Get the objects verticies
 	std::vector<sf::Vector2f> ObjPoints = Hull.GetPoints();
-	unsigned int PointAmount = ObjPoints.size();
+	const unsigned int PointAmount = ObjPoints.size();
 	sf::Vector2f Total = sf::Vector2f(0, 0);
+	#pragma omp parallel for ordered schedule(static)
 	for (int t = 0; t < PointAmount; ++t)
 	{
 		Total += ObjPoints[t];
 	}
 	Total /= (float)PointAmount;
 
-	if (IkonMath::Length(Total) < LightLength)
+	if (IkonMath::Length(LightPos - Total) < LightLength * 0.25f)
 	{
-	}
+	
 		//Create a list to store the shadows points
-		std::vector<sf::Vector2f> ShadowPoints;
-
+		sf::Vector2f ShadowPoints[12];
+		
+		int ShadowSize = 0;
+		#pragma omp parallel for ordered schedule(dynamic)
 		for (int i = 0; i < PointAmount; ++i)
 		{
-			//Get a vector from the point to the light
+			////Get a vector from the point to the light
 			sf::Vector2f LightToPoint = LightPos - ObjPoints[i];
-			float Distance = IkonMath::Length(LightToPoint);
-			if (Distance < LightLength / 2)
-			{
+			//float Distance = IkonMath::Length(LightToPoint);
+			//if (Distance < LightLength / 2)
+			//{
 				//Normalize it, to get a unit vector toward the light
 				sf::Vector2f Direction = IkonMath::Normalize(LightToPoint);
 				//Reverse it, so it points away from the light
 				Direction *= -1.0f;
 				sf::Vector2f ShadowPoint = ObjPoints[i] + (Direction * LightLength);
 
-				ShadowPoints.push_back(ShadowPoint);
-			}
+				ShadowPoints[i] = ShadowPoint;
+				ShadowSize++;
+			//}
 
 		}
-		if (ShadowPoints.size() > 0)
+
+		if (ShadowSize > 0)
 		{
 			//Make a new hull and give it all the points of the current hull
 			ConvexHull m_ShadowHull = ConvexHull(Hull);
-			m_ShadowHull.AddPoints(ShadowPoints);
+			for (int i = 0; i < ShadowSize; ++i)
+			{
+				m_ShadowHull.AddPoint(ShadowPoints[i]);
+			}
 			m_ShadowHull.CreateHull();
 			return m_ShadowHull;
 		}
@@ -162,7 +174,7 @@ ConvexHull ConvexHull::CreateShadowHull(const ConvexHull& Hull, const sf::Vector
 		{
 			return ConvexHull();
 		}
-
+	}
 
 }
 
